@@ -16,10 +16,10 @@ public interface HotelMapper {
     @Mapping(target = "numberOfRatings", ignore = true)
     Hotel toEntity(HotelRequestDto dto);
 
-    HotelResponseDto toDto(Hotel entity);
-
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "rating", ignore = true)
     @Mapping(target = "numberOfRatings", ignore = true)
     void updateEntityFromDto(HotelRequestDto dto, @MappingTarget Hotel entity);
+
+    HotelResponseDto toDto(Hotel entity);
 }
