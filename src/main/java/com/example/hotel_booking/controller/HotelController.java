@@ -50,7 +50,9 @@ public class HotelController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<HotelResponseDto> updateHotel(@PathVariable Long id, @Valid @RequestBody HotelRequestDto request){
+    public ResponseEntity<HotelResponseDto> updateHotel(
+            @PathVariable Long id,
+            @Valid @RequestBody HotelRequestDto request){
 
         log.info("Updating hotel with id={}", id);
 

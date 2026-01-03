@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -51,6 +52,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Transactional
     public HotelResponseDto create(HotelRequestDto request) {
 
         log.info("Creating hotel: {}", request.getName());
@@ -66,6 +68,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Transactional
     public HotelResponseDto update(Long id, HotelRequestDto request) {
 
         log.info("Updating hotel with id={}", id);
@@ -81,6 +84,7 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Transactional
     public void deleteById(Long id) {
 
         log.info("Deleting hotel with id={}", id);
