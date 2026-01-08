@@ -31,6 +31,7 @@ public class User implements Serializable {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Builder.Default
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(
             name = "user_roles",

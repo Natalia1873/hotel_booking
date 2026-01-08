@@ -6,9 +6,10 @@ import com.example.hotel_booking.service.BookingService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -37,15 +38,14 @@ public class BookingController {
     @PostMapping
     public ResponseEntity<BookingResponseDto> createBooking(
             @RequestParam Long roomId,
-            @Valid @RequestBody BookingRequestDto requestDto,
-            Authentication authentication){
+            @AuthenticationPrincipal UserDetails userDetails,
+            @Valid @RequestBody BookingRequestDto requestDto){
 
-        String username = authentication.getName();
 
-        log.info("Creating booking with roomId={} and username={}", roomId, username);
+        log.info("Creating booking with roomId={} for user={}" , roomId, userDetails.getUsername());
 
         return ResponseEntity.status(HttpStatus.CREATED)
-                .body(service.create(roomId, username, requestDto));
+                .body(service.create(roomId, userDetails.getUsername(),requestDto));
     }
 
     @DeleteMapping("/{id}")

@@ -12,11 +12,9 @@ import org.mapstruct.ReportingPolicy;
 public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
-    @Mapping(target = "roles", expression = "java(Set.of(dto.getRole()))")
     User toEntity (UserRequestDto requestDto);
 
     void updateEntityFromDto(UserRequestDto requestDto,@MappingTarget User entity);
 
-    @Mapping(target = "password", ignore = true)
     UserResponseDto toDto(User entity);
 }

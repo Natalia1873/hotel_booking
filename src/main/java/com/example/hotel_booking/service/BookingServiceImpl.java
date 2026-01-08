@@ -12,6 +12,8 @@ import com.example.hotel_booking.repository.RoomRepository;
 import com.example.hotel_booking.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,17 +52,13 @@ public class BookingServiceImpl implements BookingService{
 
     @Override
     @Transactional
-    public BookingResponseDto create(Long roomId, String username, BookingRequestDto requestDto) {
+    public BookingResponseDto create(Long roomId, String name, BookingRequestDto requestDto) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username= authentication.getName();
 
         log.info("Creating booking for roomId={}, username={}", roomId, username);
-
-        if(requestDto.getCheckInDate() == null || requestDto.getCheckOutDate() == null){
-            throw new IllegalArgumentException("Check-in and check-out dates must be provided");
-        }
-
-        if(!requestDto.getCheckOutDate().isAfter(requestDto.getCheckInDate())){
-            throw new IllegalArgumentException("Check-out date must be after check-in date");
-        }
 
         Room room = roomRepository.findById(roomId)
                 .orElseThrow(() -> new EntityNotFoundException(

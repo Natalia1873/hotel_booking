@@ -39,7 +39,7 @@ public class RoomController {
         return ResponseEntity.ok(service.findById(id));
     }
 
-    @PostMapping("/hotels/{hotelId}/rooms")
+    @PostMapping
     public ResponseEntity<RoomResponseDto> createRoom(
             @PathVariable Long hotelId,
             @Valid @RequestBody RoomRequestDto request){
