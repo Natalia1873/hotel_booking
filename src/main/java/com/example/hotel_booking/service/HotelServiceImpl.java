@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.core.support.FragmentNotImplementedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,6 +82,28 @@ public class HotelServiceImpl implements HotelService {
 
         Hotel saved = repository.save(hotel);
         return mapper.toDto(saved);
+    }
+
+    @Override
+    @Transactional
+    public HotelResponseDto updateRating(Long hotelId, Integer newMark) {
+
+        Hotel hotel = repository.findById(hotelId)
+                .orElseThrow(() -> new EntityNotFoundException(
+                        "Hotel with id=" + hotelId + " not found"
+                ));
+        double rating = hotel.getRating();
+        int numberOfRating = hotel.getNumberOfRatings();
+
+        double totalRating = rating * numberOfRating;
+        totalRating = totalRating - rating + newMark;
+
+        double newRating = totalRating / numberOfRating;
+        newRating = Math.round(newRating * 10.0) / 10.0;
+
+        hotel.setRating(newRating);
+        hotel.setNumberOfRatings(numberOfRating + 1);
+        return mapper.toDto(hotel);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package com.example.hotel_booking.controller;
 
 import com.example.hotel_booking.model.dto.HotelPageResponseDto;
+import com.example.hotel_booking.model.dto.HotelRatingRequestDto;
 import com.example.hotel_booking.model.dto.HotelRequestDto;
 import com.example.hotel_booking.model.dto.HotelResponseDto;
+import com.example.hotel_booking.model.entity.Hotel;
 import com.example.hotel_booking.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -57,6 +59,17 @@ public class HotelController {
         log.info("Updating hotel with id={}", id);
 
         return ResponseEntity.ok(service.update(id, request));
+    }
+
+    @PatchMapping("/{id}/rating")
+    public ResponseEntity<HotelResponseDto> updateRaiting(
+            @PathVariable Long id,
+            @Valid @RequestBody HotelRatingRequestDto request
+            ){
+        return ResponseEntity.ok(service.updateRating(id, request.getNewMark()));
+
+
+
     }
 
     @DeleteMapping("/{id}")
