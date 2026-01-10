@@ -1,10 +1,6 @@
 package com.example.hotel_booking.controller;
 
-import com.example.hotel_booking.model.dto.HotelPageResponseDto;
-import com.example.hotel_booking.model.dto.HotelRatingRequestDto;
-import com.example.hotel_booking.model.dto.HotelRequestDto;
-import com.example.hotel_booking.model.dto.HotelResponseDto;
-import com.example.hotel_booking.model.entity.Hotel;
+import com.example.hotel_booking.model.dto.*;
 import com.example.hotel_booking.service.HotelService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +28,15 @@ public class HotelController {
         log.info("Fetching hotels page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
 
         return ResponseEntity.ok(service.findAll(pageable));
+    }
+
+    @GetMapping("/search")
+    public ResponseEntity<HotelPageResponseDto> getHotelsByFilter(
+            HotelFilterRequest filter,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        return ResponseEntity.ok(service.findHotels(filter, page, size));
     }
 
     @GetMapping("/{id}")

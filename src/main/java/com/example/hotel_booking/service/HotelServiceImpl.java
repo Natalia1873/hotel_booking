@@ -2,16 +2,19 @@ package com.example.hotel_booking.service;
 
 import com.example.hotel_booking.exception.EntityNotFoundException;
 import com.example.hotel_booking.mapper.HotelMapper;
+import com.example.hotel_booking.model.dto.HotelFilterRequest;
 import com.example.hotel_booking.model.dto.HotelPageResponseDto;
 import com.example.hotel_booking.model.dto.HotelRequestDto;
 import com.example.hotel_booking.model.dto.HotelResponseDto;
 import com.example.hotel_booking.model.entity.Hotel;
 import com.example.hotel_booking.repository.HotelRepository;
+import com.example.hotel_booking.specification.HotelSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.repository.core.support.FragmentNotImplementedException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,10 +39,43 @@ public class HotelServiceImpl implements HotelService {
         dto.setPage(page.getNumber());
         dto.setSize(page.getSize());
         dto.setTotalElements(page.getTotalElements());
+        dto.setTotalPages(page.getTotalPages());
 
         log.info("Fetching hotels page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
 
         return dto;
+    }
+
+    @Override
+    public HotelPageResponseDto findHotels(HotelFilterRequest filter, int page, int size) {
+
+        Specification<Hotel> spec = Specification.where(null);
+
+        spec = spec.and(HotelSpecification.hasId(filter.getId()))
+                .and(HotelSpecification.hasName(filter.getName()))
+                .and(HotelSpecification.hasAdTitle(filter.getAdTitle()))
+                .and(HotelSpecification.hasCity(filter.getCity()))
+                .and(HotelSpecification.hasAddress(filter.getAddress()))
+                .and(HotelSpecification.hasDistanceFromCenter(filter.getDistanceFromCenter()))
+                .and(HotelSpecification.hasRating(filter.getRating()))
+                .and(HotelSpecification.hasNumberOfRatings(filter.getNumberOfRatings()));
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Hotel> hotelPage = repository.findAll(spec, pageable);
+
+        HotelPageResponseDto response  = new HotelPageResponseDto();
+        response.setContent(
+                hotelPage.getContent().stream()
+                        .map(mapper::toDto)
+                        .toList()
+        );
+        response.setPage(hotelPage.getNumber());
+        response.setSize(hotelPage.getSize());
+        response.setTotalElements(hotelPage.getTotalElements());
+        response.setTotalPages(hotelPage.getTotalPages());
+
+        return response;
     }
 
 

@@ -11,4 +11,5 @@ public class HotelPageResponseDto {
     private int page;
     private int size;
     private long totalElements;
+    private int totalPages;
 }
