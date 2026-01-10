@@ -2,17 +2,18 @@ package com.example.hotel_booking.service;
 
 import com.example.hotel_booking.exception.EntityNotFoundException;
 import com.example.hotel_booking.mapper.RoomMapper;
-import com.example.hotel_booking.model.dto.RoomPageResponseDto;
-import com.example.hotel_booking.model.dto.RoomRequestDto;
-import com.example.hotel_booking.model.dto.RoomResponseDto;
+import com.example.hotel_booking.model.dto.*;
 import com.example.hotel_booking.model.entity.Hotel;
 import com.example.hotel_booking.model.entity.Room;
 import com.example.hotel_booking.repository.HotelRepository;
 import com.example.hotel_booking.repository.RoomRepository;
+import com.example.hotel_booking.specification.RoomSpecification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,6 +44,40 @@ public class RoomServiceImpl implements RoomService {
         dto.setTotalElements(page.getTotalElements());
 
         return dto;
+    }
+
+    @Override
+    public RoomPageResponseDto findByFilter(RoomFilterRequest filter, int page, int size) {
+
+        Specification<Room> spec = Specification.where(null);
+
+        spec = spec.and(RoomSpecification.hasId(filter.getId()))
+                .and(RoomSpecification.hasName(filter.getName()))
+                .and(RoomSpecification.hasMinPrice(filter.getMinPrice()))
+                .and(RoomSpecification.hasMaxPrice(filter.getMaxPrice()))
+                .and(RoomSpecification.hasMaxPeople(filter.getMaxPeople()))
+                .and(RoomSpecification.hasHotelId(filter.getHotelId()))
+                .and(RoomSpecification.isAvailableBetween(filter.getCheckIn(),filter.getCheckOut()));
+
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Room> roomPage = roomRepository.findAll(spec, pageable);
+
+        RoomPageResponseDto response = new RoomPageResponseDto();
+
+        response.setContent(roomPage.getContent().stream()
+                .map(mapper :: toDto)
+                .toList());
+        response.setSize(roomPage.getSize());
+        response.setPage(roomPage.getNumber());
+        response.setTotalPages(roomPage.getTotalPages());
+        response.setTotalElements(roomPage.getTotalElements());
+
+        log.info("Fetching rooms by filter={}, page={}, size={}", filter, page, size);
+
+        return response;
+
+
     }
 
     @Override
