@@ -10,6 +10,7 @@ import com.example.hotel_booking.model.entity.User;
 import com.example.hotel_booking.repository.BookingRepository;
 import com.example.hotel_booking.repository.RoomRepository;
 import com.example.hotel_booking.repository.UserRepository;
+import com.example.hotel_booking.statistics.service.StatisticsEventProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ public class BookingServiceImpl implements BookingService{
     private final RoomRepository roomRepository;
     private final UserRepository userRepository;
     private final BookingMapper mapper;
+    private final StatisticsEventProducer statisticsEventProducer;
 
     @Override
     @Transactional(readOnly = true)
@@ -88,6 +90,11 @@ public class BookingServiceImpl implements BookingService{
                 .build();
 
         Booking saved = bookingRepository.save(booking);
+        statisticsEventProducer.sendRoomBooked(
+                user.getId(),
+                saved.getCheckInDate(),
+                saved.getCheckOutDate()
+        );
         return mapper.toDto(saved);
     }
 

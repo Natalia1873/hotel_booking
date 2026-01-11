@@ -33,6 +33,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.DELETE,"/api/v1/rooms/**").hasRole("ADMIN")
 
                         .requestMatchers(HttpMethod.GET,"/api/v1/bookings").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.GET, "/api/v1/statistics/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )
                 .httpBasic(Customizer.withDefaults());

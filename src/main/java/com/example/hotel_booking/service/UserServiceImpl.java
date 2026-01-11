@@ -8,6 +8,7 @@ import com.example.hotel_booking.model.dto.UserResponseDto;
 import com.example.hotel_booking.model.entity.User;
 import com.example.hotel_booking.model.enums.RoleType;
 import com.example.hotel_booking.repository.UserRepository;
+import com.example.hotel_booking.statistics.service.StatisticsEventProducer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,6 +26,7 @@ public class UserServiceImpl implements UserService{
     private final UserRepository repository;
     private final UserMapper mapper;
     private final PasswordEncoder passwordEncoder;
+    private final StatisticsEventProducer statisticsEventProducer;
 
     @Override
     public List<UserResponseDto> findAll() {
@@ -79,6 +81,7 @@ public class UserServiceImpl implements UserService{
         user.setRoles(Set.of(role));
 
         User saved = repository.save(user);
+        statisticsEventProducer.sendUserRegistered(saved.getId());
         return mapper.toDto(saved);
     }
 
