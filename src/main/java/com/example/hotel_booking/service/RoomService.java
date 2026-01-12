@@ -11,6 +11,7 @@ public interface RoomService {
 
     RoomPageResponseDto findAll(Pageable pageable);
     RoomPageResponseDto findByFilter(RoomFilterRequest filter, int page, int size);
+    RoomPageResponseDto findAllByHotel(Long hotelId, Pageable pageable);
     RoomResponseDto findById(Long id);
     RoomResponseDto create(Long hotelId, RoomRequestDto request);
     RoomResponseDto update(Long id, RoomRequestDto request);

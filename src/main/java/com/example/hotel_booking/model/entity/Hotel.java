@@ -1,6 +1,8 @@
 package com.example.hotel_booking.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import lombok.*;
@@ -37,8 +39,8 @@ public class Hotel implements Serializable {
     @Column(name="distance_from_center")
     private Double distanceFromCenter;
 
-    @Min(1)
-    @Max(5)
+    @DecimalMin("1.0")
+    @DecimalMax("5.0")
     private Double rating;
 
     @Column(name="number_of_ratings")

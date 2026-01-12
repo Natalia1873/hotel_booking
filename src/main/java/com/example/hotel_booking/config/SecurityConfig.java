@@ -22,20 +22,28 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // users
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/api/v1/users/**").hasAnyRole("USER", "ADMIN")
 
+                        // hotels
                         .requestMatchers(HttpMethod.POST,"/api/v1/hotels/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/v1/hotels/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/v1/hotels/**").hasRole("ADMIN")
 
+                        // rooms
                         .requestMatchers(HttpMethod.POST,"/api/v1/rooms/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.PUT,"/api/v1/rooms/**").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.DELETE,"/api/v1/rooms/**").hasRole("ADMIN")
 
+                        // other
                         .requestMatchers(HttpMethod.GET,"/api/v1/bookings").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.GET, "/api/v1/statistics/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
+
                 .httpBasic(Customizer.withDefaults());
         return http.build();
     }

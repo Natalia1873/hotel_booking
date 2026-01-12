@@ -81,6 +81,30 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    public RoomPageResponseDto findAllByHotel(Long hotelId, Pageable pageable) {
+        if (!hotelRepository.existsById(hotelId)) {
+            throw new EntityNotFoundException(
+                    "Hotel with id=" + hotelId + " not found"
+            );
+        }
+
+        Page<Room> page = roomRepository.findAllByHotelId(hotelId, pageable);
+
+        RoomPageResponseDto dto = new RoomPageResponseDto();
+        dto.setContent(
+                page.getContent().stream()
+                        .map(mapper::toDto)
+                        .toList()
+        );
+        dto.setPage(page.getNumber());
+        dto.setSize(page.getSize());
+        dto.setTotalElements(page.getTotalElements());
+        dto.setTotalPages(page.getTotalPages());
+
+        return dto;
+    }
+
+    @Override
     public RoomResponseDto findById(Long id) {
         Room room = roomRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException(

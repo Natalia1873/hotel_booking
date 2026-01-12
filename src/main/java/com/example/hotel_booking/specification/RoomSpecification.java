@@ -34,7 +34,7 @@ public class RoomSpecification {
     public static Specification<Room> hasMaxPrice(BigDecimal maxPrice) {
         return (root, query, criteriaBuilder) ->
                 maxPrice == null ? null :
-                        criteriaBuilder.lessThanOrEqualTo(root.get("maxPrice"), maxPrice);
+                        criteriaBuilder.lessThanOrEqualTo(root.get("price"), maxPrice);
     }
 
     public static Specification<Room> hasMaxPeople(Integer maxPeople) {

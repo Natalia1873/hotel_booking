@@ -22,11 +22,13 @@ public class RoomController {
 
     @GetMapping
     public ResponseEntity<RoomPageResponseDto> getAllRooms(
+            @PathVariable Long hotelId,
             @PageableDefault(size = 10, sort = "name") Pageable pageable){
 
-        log.info("Fetching rooms page={}, size={}", pageable.getPageNumber(), pageable.getPageSize());
+        log.info("Fetching rooms for hotelId={}, page={}, size={}",
+                hotelId, pageable.getPageNumber(), pageable.getPageSize());
 
-        return ResponseEntity.ok(service.findAll(pageable));
+        return ResponseEntity.ok(service.findAllByHotel(hotelId, pageable));
     }
 
     @GetMapping("/search")

@@ -131,14 +131,15 @@ public class HotelServiceImpl implements HotelService {
         double rating = hotel.getRating();
         int numberOfRating = hotel.getNumberOfRatings();
 
-        double totalRating = rating * numberOfRating;
-        totalRating = totalRating - rating + newMark;
+        double total = rating * numberOfRating + newMark;
+        int newCount = numberOfRating + 1;
 
-        double newRating = totalRating / numberOfRating;
+        double newRating = total / newCount;
         newRating = Math.round(newRating * 10.0) / 10.0;
 
         hotel.setRating(newRating);
-        hotel.setNumberOfRatings(numberOfRating + 1);
+        hotel.setNumberOfRatings(newCount);
+
         return mapper.toDto(hotel);
     }
 
